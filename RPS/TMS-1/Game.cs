@@ -9,6 +9,8 @@ class Game
     }
     
     private int _roundsPlayed = 0; // сохранить состояние можно в полях
+    private int _playerScore = 0;
+    private int _computerScore = 0;
 
     public int RoundsToPlay { get; } // авто-свойство (приватное поле и простой геттер + сеттер)
 
@@ -19,7 +21,7 @@ class Game
     public void Play()
     {
         Console.WriteLine("Hello this is Rock Paper Scissors");
-        Console.WriteLine("Enter your step");
+        Console.WriteLine("Choose your weapon:");
 
         UserWon = false;
 
@@ -28,9 +30,8 @@ class Game
             Console.WriteLine("1 - Rock");
             Console.WriteLine("2 - Paper");
             Console.WriteLine("3 - Scissors");
+            Console.WriteLine("4 - Well");
             Console.WriteLine("0 - Exit");
-
-            _roundsPlayed++;
 
             var userInput = Console.ReadLine(); // "5"
 
@@ -40,7 +41,7 @@ class Game
             // put result to out result param
             // return if parse was successful
 
-            if (!int.TryParse(userInput, out userChoice) || !(userChoice >= 0 && userChoice <= 3))
+            if (!int.TryParse(userInput, out userChoice) || !(userChoice >= 0 && userChoice <= 4))
             {
                 Console.WriteLine(userChoice);
                 Console.WriteLine("Invalid input");
@@ -51,6 +52,8 @@ class Game
             {
                 return;
             }
+            
+            _roundsPlayed++;
             
             string userChoiceString = CalculateMoveName(userChoice);
             Console.WriteLine($"You chose {userChoiceString}");
@@ -67,11 +70,41 @@ class Game
             var winnerExists = TryCalculateWinner(userChoice, computerChoice, out var winner);
             if (winnerExists)
             {
-                Console.WriteLine($"{winner} won the round");
+                if (winner == "Player 1")
+                {
+                    _playerScore++;
+                    Console.WriteLine("You won the round!");
+                }
+                else if (winner == "Player 2")
+                {
+                    _computerScore++;
+                    Console.WriteLine("Computer won the round!");
+                }
             }
             else
             {
-                Console.WriteLine("It's a draw");
+                _playerScore++;
+                _computerScore++;
+                Console.WriteLine("It's a draw!");
+            }
+            
+            Console.WriteLine("-----------------------------------");
+            Console.WriteLine($"Current Score -> You: {_playerScore} | Computer: {_computerScore}");
+            Console.WriteLine(DisplayRoundsPlayed(true, _roundsPlayed));
+            Console.WriteLine("-----------------------------------");
+            
+            int remainingRounds = RoundsToPlay - _roundsPlayed;
+            
+            if (_playerScore > _computerScore + remainingRounds)
+            {
+                Console.WriteLine("You have an unbeatable lead! Ending game early...");
+                break;
+            }
+            
+            if (_computerScore > _playerScore + remainingRounds)
+            {
+                Console.WriteLine("The computer has an unbeatable lead! Ending game early...");
+                break;
             }
             
         } while (_roundsPlayed < RoundsToPlay);
@@ -85,8 +118,10 @@ class Game
                 return "Rock";
             case 2:
                 return "Paper";
-            default:
+            case 3: 
                 return "Scissors";
+            default:
+                return "Well";
         }
     }
 
@@ -98,8 +133,12 @@ class Game
             return false; 
         }
 
-        if (player1Move == 1 && player2Move == 3 || player1Move == 2 && player2Move == 1 ||
-            player1Move == 3 && player2Move == 2)
+        if ((player1Move == 1 && player2Move == 3) ||
+            (player1Move == 2 && player2Move == 1) || 
+            (player1Move == 3 && player2Move == 2) || 
+            (player1Move == 4 && player2Move == 1) || 
+            (player1Move == 4 && player2Move == 3) || 
+            (player1Move == 2 && player2Move == 4))
         {
             winner = "Player 1";
         }

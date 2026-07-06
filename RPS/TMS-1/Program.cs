@@ -2,6 +2,35 @@
 
 // Main - Program 
 
-Game game = new Game(5); // object of type (class) Game
+using System;
+using TMS_1;
 
-game.Play();
+class Program
+{
+    static void Main()
+    {
+        Console.WriteLine("Welcome to Rock Paper Scissors!");
+        
+        int rounds = GetRoundsFromPlayer();
+        
+        var myGame = new Game(rounds);
+        myGame.Play();
+    }
+    
+    static int GetRoundsFromPlayer()
+    {
+        int roundsToPlay;
+        while (true)
+        {
+            Console.WriteLine("How many rounds do you want to play?");
+            string input = Console.ReadLine();
+            
+            if (int.TryParse(input, out roundsToPlay) && roundsToPlay > 0)
+            {
+                return roundsToPlay; 
+            }
+            
+            Console.WriteLine("Invalid input. Please enter a valid number greater than 0.");
+        }
+    }
+}
