@@ -16,7 +16,7 @@ class Board
 
     public bool IsInside(Position position) // ref if Positions is a class, value if Positions is a struct
     {
-        return position.X >= 0 && position.X < Rows && position.Y >= 0 && position.Y < Columns;
+        return position.X >= 0 && position.X < Columns && position.Y >= 0 && position.Y < Rows;
     }
 
     public bool HasShip(Position position)
